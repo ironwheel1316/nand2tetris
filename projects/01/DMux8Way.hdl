@@ -1,0 +1,29 @@
+// This file is part of www.nand2tetris.org
+// and the book "The Elements of Computing Systems"
+// by Nisan and Schocken, MIT Press.
+// File name: projects/01/DMux8Way.hdl
+/**
+ * 8-way demultiplexor:
+ * [a, b, c, d, e, f, g, h] = [in, 0, 0, 0, 0, 0, 0, 0] if sel == 000
+ *                            [0, in, 0, 0, 0, 0, 0, 0] if sel == 001
+ *                            ...
+ *                            [0, 0, 0, 0, 0, 0, 0, in] if sel == 111
+ */
+CHIP DMux8Way {
+    IN in, sel[3];
+    OUT a, b, c, d, e, f, g, h;
+
+    PARTS:
+    DMux4Way(in = in, sel = sel[0..1], a = tmp1, b = tmp2, c = tmp3, d = tmp4);
+    Not(in = sel[2], out = nsel);
+    And(a = tmp1, b = nsel, out = a);
+    And(a = tmp2, b = nsel, out = b);
+    And(a = tmp3, b = nsel, out = c);
+    And(a = tmp4, b = nsel, out = d);
+    And(a = tmp1, b = sel[2], out = e);
+    And(a = tmp2, b = sel[2], out = f);
+    And(a = tmp3, b = sel[2], out = g);
+    And(a = tmp4, b = sel[2], out = h);
+    /* In fact, according to @PKUFlyingPig, it is really unnecessary to write so many Ands.
+    Let out = s[8], we can Mux s[i] and s[i + 4] to confirm every digit. */
+}
